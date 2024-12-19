@@ -1,4 +1,5 @@
 import pandas as pd
+import kagglehub
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -7,16 +8,17 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
 
 # Load Dataset
-data_path = r'C:\Users\PAVPA\Downloads\archive_nifty\NIFTY50_all.csv'  # Update for Colab compatibility
-data = pd.read_csv(data_path)
+path = kagglehub.dataset_download("rohanrao/nifty50-stock-market-data")
+csv_file_path = f"{path}/NIFTY50_all.csv"
+data = pd.read_csv(csv_file_path)
 
 # Task 1: Analyze the indicators in the dataset that best explain volatility and unpredictability
 # Data Preprocessing
-data['Date'] = pd.to_datetime(data['Date'])  # Convert date column to datetime
+data['Date'] = pd.to_datetime(data['Date'])  
 
 # Check for missing values
 if data.isnull().sum().sum() > 0:
-    data.fillna(method='ffill', inplace=True)  # Forward fill missing values
+    data.fillna(method='ffill', inplace=True)  
 
 # Feature Engineering
 data['Year'] = data['Date'].dt.year
@@ -35,7 +37,6 @@ plt.ylabel('Volatility')
 plt.show()
 
 # Task 2: Choose promising stocks based on analysis for the portfolio
-# Assuming the dataset has 'Symbol' column for different stocks
 if 'Symbol' in data.columns:
     stock_volatility = data.groupby('Symbol')['Volatility'].mean().sort_values()
     promising_stocks = stock_volatility.head()
@@ -58,7 +59,7 @@ else:
 # Task 4: Feature engineer and build machine learning solutions
 # Prepare data for ML model
 features = ['Open', 'High', 'Low', 'Close', 'Volume', 'Moving_Avg_20', 'Moving_Avg_50']
-data = data.dropna()  # Remove rows with NaN values
+data = data.dropna()  
 X = data[features]
 y = data['Close'].shift(-1).fillna(method='ffill')
 

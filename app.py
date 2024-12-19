@@ -2,10 +2,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
+import kagglehub
 
 # Load the Dataset
-data_path = r'C:\Users\PAVPA\Downloads\archive_nifty\NIFTY50_all.csv'  # Update this path
-data = pd.read_csv(data_path)
+path = kagglehub.dataset_download("rohanrao/nifty50-stock-market-data")
+csv_file_path = f"{path}/NIFTY50_all.csv"
+data = pd.read_csv(csv_file_path)
+
 data['Date'] = pd.to_datetime(data['Date'])
 data['Volatility'] = data['High'] - data['Low']
 
